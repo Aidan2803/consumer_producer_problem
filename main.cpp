@@ -5,17 +5,19 @@
 #include <time.h>
 #include <unistd.h>
 
+pthread_mutex_t mutex_buff;
+
 std::string product_type[] = {"Computer", "Vehicle", "Laptop", "E-book"};
 
 class Product{
     private:
         int id;
         std::string type;
-        public:
+    public:
         Product():id(0), type("NONE"){}
         Product(int newId, std::string newType):id(newId), type(newType){}
         ~Product(){};
-
+    
         void print_id_and_type(){
             std::cout << "id: " << id << " " << "type: " << type << "\n";
         }
@@ -25,16 +27,20 @@ std::list<Product> products_containter;
 
 void* producer(void *args){
     while(1){
-        std::cout << "create product\n";
+        pthread_mutex_lock(&mutex_buff);
         products_containter.push_front(Product(rand() % 1500, product_type[rand() % 4]));
+        pthread_mutex_unlock(&mutex_buff);
     }    
 }
 
 void* consumer(void *args){
     while(1){
-        std::cout << "consume product\n";
-        Product temp();
+        pthread_mutex_lock(&mutex_buff);
+        Product temp;
+        temp = products_containter.back();
         products_containter.pop_back();
+        temp.print_id_and_type();
+        pthread_mutex_unlock(&mutex_buff);
     }    
 }
 
@@ -69,6 +75,7 @@ int main(int argc, char* argv[]){
     const int threads_amount = consumers_threads_amount + producers_threads_amount;
 
     pthread_t threads[threads_amount];
+    pthread_mutex_init(&mutex_buff, NULL);
 
     for(int i = 0; i < producers_threads_amount; i++){
         if(pthread_create(&threads[i], NULL, *producer, NULL) != 0){
@@ -88,5 +95,6 @@ int main(int argc, char* argv[]){
         }
     }
 
+    pthread_mutex_destroy(&mutex_buff);
     return 0;
 }
