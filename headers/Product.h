@@ -1,5 +1,5 @@
 #ifndef PRODUCT_H
-#define PROCESS_H
+#define PRODUCT_H
 
 class Product{
     private:
