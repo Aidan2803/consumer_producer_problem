@@ -27,19 +27,19 @@ void Process::init_sync() {
 
 void Process::create_threads() {
   for (int i = 0; i < producers_threads_amount; i++) {
-    if (pthread_create(&threads[i], NULL, *(Producer::produce), NULL) != 0) {
+    if (pthread_create(&threads[i], NULL, *producer.produce, NULL) != 0) {
       perror("Could not create thread (producer)");
     }
   }
 
   for (int i = consumers_threads_amount; i < threads_amount; i++) {
-    if (pthread_create(&threads[i], NULL, *(Consumer::consume), NULL) != 0) {
+    if (pthread_create(&threads[i], NULL, *consumer.consume, NULL) != 0) {
       perror("Could not create thread (consumer)");
     }
   }
 }
 
-void Process::signalHandler(int signumb) {
+void Process::signal_handler(int signumb) {
   stop = true;
 
   usleep(100000);

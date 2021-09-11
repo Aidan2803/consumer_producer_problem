@@ -47,7 +47,7 @@ bool check_if_data_valid(short consumers_threads_amount_to_check,
 }
 
 int main(int argc, char *argv[]) {
-  signal(SIGINT, Process::signalHandler);
+  signal(SIGINT, Process::signal_handler);
   srand(time(NULL));
 
   bool fault{false};

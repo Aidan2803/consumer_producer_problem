@@ -30,7 +30,7 @@ class Process{
     
     void create_threads();
 
-    static void signalHandler(int signumb);
+    static void signal_handler(int signumb);
 };
 
 #endif
